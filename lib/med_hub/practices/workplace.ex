@@ -17,5 +17,6 @@ defmodule MedHub.Practices.Workplace do
     workplace
     |> cast(attrs, [:name, :street_name, :house_number, :zip, :city])
     |> validate_required([:name, :street_name, :house_number, :zip, :city])
+    |> unique_constraint(:name)
   end
 end

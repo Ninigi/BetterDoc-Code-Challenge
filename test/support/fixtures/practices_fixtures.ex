@@ -5,20 +5,26 @@ defmodule MedHub.PracticesFixtures do
   """
 
   @doc """
+  Valid workplace attributes
+  """
+  def workplace_attrs(attrs \\ %{}) do
+    name = "#{Faker.Color.name()} #{Faker.Team.creature} #{Faker.UUID.v4()}"
+    
+    Enum.into(attrs, %{
+      city: Faker.Address.city(),
+      house_number: Faker.Address.building_number(),
+      name: name,
+      street_name: Faker.Address.street_name(),
+      zip: Faker.Address.zip_code()
+    })
+  end
+  @doc """
   Generate a workplace.
   """
   def workplace_fixture(attrs \\ %{}) do
-    name = "#{Faker.Color.name()} #{Faker.Cat.name}"
-
     {:ok, workplace} =
       attrs
-      |> Enum.into(%{
-        city: Faker.Address.city(),
-        house_number: Faker.Address.building_number(),
-        name: name,
-        street_name: Faker.Address.street_name(),
-        zip: Faker.Address.zip_code()
-      })
+      |> workplace_attrs()
       |> MedHub.Practices.create_workplace()
 
     workplace
@@ -28,9 +34,10 @@ defmodule MedHub.PracticesFixtures do
   Generate a medic.
   """
   def medic_fixture(attrs \\ %{}) do
-    gender = MedHub.Practices.Medic 
-    |> Ecto.Enum.values(:gender)
-    |> Enum.random()
+    gender =
+      MedHub.Practices.Medic
+      |> Ecto.Enum.values(:gender)
+      |> Enum.random()
 
     workplace = workplace_fixture()
 

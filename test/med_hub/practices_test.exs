@@ -3,6 +3,8 @@ defmodule MedHub.PracticesTest do
 
   alias MedHub.Practices
 
+  @valid_genders Ecto.Enum.values(Practices.Medic, :gender)
+
   describe "workplaces" do
     alias MedHub.Practices.Workplace
 
@@ -21,23 +23,35 @@ defmodule MedHub.PracticesTest do
     end
 
     test "create_workplace/1 with valid data creates a workplace" do
-      valid_attrs = %{name: "some name", zip: "some zip", street_name: "some street_name", house_number: "some house_number", city: "some city"}
+      valid_attrs = workplace_attrs()
 
       assert {:ok, %Workplace{} = workplace} = Practices.create_workplace(valid_attrs)
-      assert workplace.name == "some name"
-      assert workplace.zip == "some zip"
-      assert workplace.street_name == "some street_name"
-      assert workplace.house_number == "some house_number"
-      assert workplace.city == "some city"
+      assert valid_attrs == Map.take(workplace, [:name, :zip, :street_name, :house_number, :city])
     end
 
     test "create_workplace/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Practices.create_workplace(@invalid_attrs)
     end
 
+    test "create_workplace/1 with duplicate name returns error" do
+      valid_attrs = workplace_attrs()
+
+      invalid_attrs = workplace_attrs(%{name: valid_attrs.name})
+
+      assert {:ok, %Workplace{}} = Practices.create_workplace(valid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Practices.create_workplace(invalid_attrs)
+    end
+
     test "update_workplace/2 with valid data updates the workplace" do
       workplace = workplace_fixture()
-      update_attrs = %{name: "some updated name", zip: "some updated zip", street_name: "some updated street_name", house_number: "some updated house_number", city: "some updated city"}
+
+      update_attrs = %{
+        name: "some updated name",
+        zip: "some updated zip",
+        street_name: "some updated street_name",
+        house_number: "some updated house_number",
+        city: "some updated city"
+      }
 
       assert {:ok, %Workplace{} = workplace} = Practices.update_workplace(workplace, update_attrs)
       assert workplace.name == "some updated name"
@@ -71,12 +85,18 @@ defmodule MedHub.PracticesTest do
     import MedHub.PracticesFixtures
 
     @invalid_attrs %{name: nil, title: nil, gender: nil, specialty: nil}
-    @valid_genders Ecto.Enum.values(Medic, :gender)
 
     defp valid_attrs do
       workplace = workplace_fixture()
       gender = Enum.random(@valid_genders)
-      %{name: "some name", title: "some title", gender: gender, specialty: "some specialty", workplace_id: workplace.id}
+
+      %{
+        name: "some name",
+        title: "some title",
+        gender: gender,
+        specialty: "some specialty",
+        workplace_id: workplace.id
+      }
     end
 
     defp different_gender(current_gender) do
@@ -110,7 +130,13 @@ defmodule MedHub.PracticesTest do
     end
 
     test "create_medic/1 with invalid gender returns error changeset" do
-      attrs = %{name: "some name", title: "some title", gender: "invalid gender", specialty: "some specialty"}
+      attrs = %{
+        name: "some name",
+        title: "some title",
+        gender: "invalid gender",
+        specialty: "some specialty"
+      }
+
       assert {:error, %Ecto.Changeset{}} = Practices.create_medic(attrs)
     end
 
@@ -118,7 +144,14 @@ defmodule MedHub.PracticesTest do
       medic = medic_fixture()
       gender = different_gender(medic.gender)
       workplace = workplace_fixture()
-      update_attrs = %{name: "some updated name", title: "some updated title", gender: gender, specialty: "some updated specialty", workplace_id: workplace.id}
+
+      update_attrs = %{
+        name: "some updated name",
+        title: "some updated title",
+        gender: gender,
+        specialty: "some updated specialty",
+        workplace_id: workplace.id
+      }
 
       assert {:ok, %Medic{} = medic} = Practices.update_medic(medic, update_attrs)
       assert medic.name == "some updated name"
@@ -135,7 +168,10 @@ defmodule MedHub.PracticesTest do
 
     test "update_medic/2 with invalid gender returns error changeset" do
       medic = medic_fixture()
-      assert {:error, %Ecto.Changeset{} = error_changeset} = Practices.update_medic(medic, %{gender: "invalid gender"})
+
+      assert {:error, %Ecto.Changeset{} = error_changeset} =
+               Practices.update_medic(medic, %{gender: "invalid gender"})
+
       assert medic == Practices.get_medic!(medic.id)
       assert {"is invalid", _} = error_changeset.errors[:gender]
     end
