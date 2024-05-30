@@ -49,21 +49,26 @@ commands:
           name: Run tests
           command: MIX_ENV=test mix test --cover
 
-workflows:
-  dev:
-    jobs:
-      check-formatting:
-        executor: builder
-        steps:
-          - checkout
-          - install-deps:
-              include-assets: false
-          - mix-format
+jobs:
+  check-formatting:
+    executor: builder
+    steps:
+      - checkout
+      - install-deps:
+          include-assets: false
+      - mix-format
 
-      run-unit-tests:
-        executor: builder
-        steps:
-          - checkout
-          - install-deps:
-              include-assets: false
-          - mix-test
+  run-unit-tests:
+    executor: builder
+    steps:
+      - checkout
+      - install-deps:
+          include-assets: false
+      - mix-test
+
+workflows:
+  example:
+    jobs:
+      - check-formatting
+
+      - run-unit-tests
