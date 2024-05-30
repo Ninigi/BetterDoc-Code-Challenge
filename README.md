@@ -1,3 +1,5 @@
+[![CircleCI](https://dl.circleci.com/status-badge/img/circleci/6w2f2gy8py8ito6Bi3D6PP/LrohxxxeKADARTqH9sNeLC/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/6w2f2gy8py8ito6Bi3D6PP/LrohxxxeKADARTqH9sNeLC/tree/main)
+
 # MedHub
 
 BetterDoc Code Challenge
