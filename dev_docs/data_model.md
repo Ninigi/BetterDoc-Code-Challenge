@@ -28,8 +28,10 @@ All tables have the following default fields and are therefore omitted:
 
 * `name` [string]
 * `street_name` [string]
-* `street_number` [string]
+* `house_number` [string]
 * `zip` [string]
 * `city` [string]
 
 Instead of using an `address` text field, the address is broken up into individual fields. A single `address` field would be difficult to normalize once there is production data, and breaking the address up like this provides the option to add searches like "search by zip code/city" in the future.
+
+Addresses are usually normalized (separate table), but we can do that later in the process.
