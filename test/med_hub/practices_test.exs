@@ -213,7 +213,7 @@ defmodule MedHub.PracticesTest do
 
       workplace = Practices.get_workplace!(workplace.id)
 
-      assert workplace.medic_count == 1
+      assert workplace.medics_count == 1
     end
   end
 end
