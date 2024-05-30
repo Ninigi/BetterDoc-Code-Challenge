@@ -54,12 +54,12 @@ See [dev_docs/data_model.md](/dev_docs/data_model.md)
 ## Pages specs
 
 * `/medics` medics index incl. workplace info + delete button
-`/medics/new` medic form
-`/medics/:id/[action]` medic show/edit
+* `/medics/new` medic form
+* `/medics/:id/[action]` medic show/edit
 
-`/workplaces` workplaces index
-`/workplaces/new` workplace form
-`/workplaces/:id/[action]` workplace show/edit + list of medics at the workplace
+* `/workplaces` workplaces index
+* `/workplaces/new` workplace form
+* `/workplaces/:id/[action]` workplace show/edit + list of medics at the workplace
 
 ## Limit Number of Medics per Workplace
 
