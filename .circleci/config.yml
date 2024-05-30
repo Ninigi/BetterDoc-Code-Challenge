@@ -7,7 +7,7 @@ description: Common jobs for testing and building phoenix applications
 executors:
   builder:
     docker:
-      - image: circleci/elixir:1.16.0-node
+      - image: circleci/elixir:1.16.0-erlang-26.2.1-node
       - image: circleci/postgres:14.8-alpine
     working_directory: ~/project
 
