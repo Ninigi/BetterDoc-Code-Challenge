@@ -3,8 +3,6 @@ defmodule MedHub.PracticesTest do
 
   alias MedHub.Practices
 
-  @valid_genders Ecto.Enum.values(Practices.Medic, :gender)
-
   describe "workplaces" do
     alias MedHub.Practices.Workplace
 
@@ -86,23 +84,10 @@ defmodule MedHub.PracticesTest do
 
     @invalid_attrs %{name: nil, title: nil, gender: nil, specialty: nil}
 
-    defp valid_attrs do
-      workplace = workplace_fixture()
-      gender = Enum.random(@valid_genders)
-
-      %{
-        name: "some name",
-        title: "some title",
-        gender: gender,
-        specialty: "some specialty",
-        workplace_id: workplace.id
-      }
-    end
-
     defp different_gender(current_gender) do
-      case Enum.random(@valid_genders) do
-        ^current_gender -> different_gender(current_gender)
-        new_gender -> new_gender
+      case medic_attrs() do
+        %{gender: ^current_gender} -> different_gender(current_gender)
+        %{gender: new_gender} -> new_gender
       end
     end
 
@@ -117,7 +102,7 @@ defmodule MedHub.PracticesTest do
     end
 
     test "create_medic/1 with valid data creates a medic" do
-      attrs = valid_attrs()
+      attrs = medic_attrs()
       assert {:ok, %Medic{} = medic} = Practices.create_medic(attrs)
       assert medic.name == "some name"
       assert medic.title == "some title"
@@ -185,6 +170,50 @@ defmodule MedHub.PracticesTest do
     test "change_medic/1 returns a medic changeset" do
       medic = medic_fixture()
       assert %Ecto.Changeset{} = Practices.change_medic(medic)
+    end
+  end
+
+  describe "medics per workplace" do
+    import MedHub.PracticesFixtures
+    alias MedHub.Practices
+    alias MedHub.Repo
+
+    setup do
+      %{workplace: workplace_fixture()}
+    end
+
+    test "does not allow more than 50 medics", %{workplace: workplace} do
+      Enum.each(1..50, fn _num ->
+        medic_fixture(%{workplace_id: workplace.id})
+      end)
+
+      assert Repo.aggregate(Practices.Medic, :count) == 50
+
+      attrs = medic_attrs(%{workplace_id: workplace.id})
+
+      assert {:error, %Ecto.Changeset{}} = Practices.create_medic(attrs)
+    end
+
+    test "works for to up to 50 medics", %{workplace: workplace} do
+      Enum.each(1..49, fn _num ->
+        medic_fixture(%{workplace_id: workplace.id})
+      end)
+
+      attrs = medic_attrs(%{workplace_id: workplace.id})
+
+      assert Repo.aggregate(Practices.Medic, :count) == 49
+      assert {:ok, _medic} = Practices.create_medic(attrs)
+    end
+
+    test "automatically updates workplace.medics_count", %{workplace: workplace} do
+      assert workplace.medics_count == 0
+      attrs = medic_attrs(%{workplace_id: workplace.id})
+
+      assert {:ok, _} = Practices.create_medic(attrs)
+
+      workplace = Practices.get_workplace!(workplace.id)
+
+      assert workplace.medic_count == 1
     end
   end
 end

@@ -4,12 +4,14 @@ defmodule MedHub.PracticesFixtures do
   entities via the `MedHub.Practices` context.
   """
 
+  @valid_genders Ecto.Enum.values(MedHub.Practices.Medic, :gender)
+
   @doc """
   Valid workplace attributes
   """
   def workplace_attrs(attrs \\ %{}) do
-    name = "#{Faker.Color.name()} #{Faker.Team.creature} #{Faker.UUID.v4()}"
-    
+    name = "#{Faker.Color.name()} #{Faker.Team.creature()} #{Faker.UUID.v4()}"
+
     Enum.into(attrs, %{
       city: Faker.Address.city(),
       house_number: Faker.Address.building_number(),
@@ -18,6 +20,7 @@ defmodule MedHub.PracticesFixtures do
       zip: Faker.Address.zip_code()
     })
   end
+
   @doc """
   Generate a workplace.
   """
@@ -31,25 +34,26 @@ defmodule MedHub.PracticesFixtures do
   end
 
   @doc """
+  Valid medic attributes
+  """
+  def medic_attrs(attrs \\ %{}) do
+    attrs
+    |> Enum.into(%{
+      name: Faker.Person.name(),
+      title: "Dr.",
+      gender: Enum.random(@valid_genders),
+      specialty: "some specialty",
+      workplace_id: Map.get(attrs, :workplace_id, workplace_fixture().id)
+    })
+  end
+
+  @doc """
   Generate a medic.
   """
   def medic_fixture(attrs \\ %{}) do
-    gender =
-      MedHub.Practices.Medic
-      |> Ecto.Enum.values(:gender)
-      |> Enum.random()
-
-    workplace = workplace_fixture()
-
     {:ok, medic} =
       attrs
-      |> Enum.into(%{
-        gender: gender,
-        name: "some name",
-        specialty: "some specialty",
-        title: "some title",
-        workplace_id: workplace.id
-      })
+      |> medic_attrs()
       |> MedHub.Practices.create_medic()
 
     medic
