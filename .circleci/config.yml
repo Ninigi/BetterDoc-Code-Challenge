@@ -1,42 +1,67 @@
-# Couldn't automatically generate a config from your source code.
-# This is a generic template to serve as a base for your custom config
-# See: https://circleci.com/docs/configuration-reference
+# This code is licensed from CircleCI to the user under the MIT license.
+# See here for details: https://circleci.com/developer/orbs/licensing
 version: 2.1
-jobs:
-  test:
+
+description: Common jobs for testing and building phoenix applications
+
+executors:
+  builder:
     docker:
-      - image: cimg/base:stable
+      - image: circleci/elixir:1.9.4-node
+      - image: circleci/postgres:10.1-alpine
+    working_directory: ~/project
+
+commands:
+  install-deps:
+    description: Installs mix and npm dependencies
+    parameters:
+      include-assets:
+        type: boolean
+        default: true
     steps:
-      - checkout
+      - run:
+          name: Install hex
+          command: mix local.hex --force
+      - run:
+          name: Install rebar
+          command: mix local.rebar --force
+      - run:
+          name: Install mix deps
+          command: mix deps.get
+      - when:
+          condition: << parameters.include-assets >>
+          steps:
+            - run:
+                name: Install npm deps
+                command: npm install --prefix=./assets
+
+  mix-format:
+    description: Validates code has been formatted with mix format
+    steps:
+      - run:
+          name: Check elixir formatting
+          command: mix format --check-formatted --dry-run
+
+  mix-test:
+    description: Runs all tests via mix
+    steps:
       - run:
           name: Run tests
-          command: mix test --cover
-  build:
-    docker:
-      - image: cimg/base:stable
+          command: MIX_ENV=test mix test
+
+jobs:
+  check-formatting:
+    executor: builder
     steps:
       - checkout
-      # Replace this with steps to build a package, or executable
-      - run:
-          name: Build an artifact
-          command: touch example.txt
-      - store_artifacts:
-          path: example.txt
-  deploy:
-    docker:
-      - image: cimg/base:stable
+      - install-deps:
+          include-assets: false
+      - mix-format
+
+  run-unit-tests:
+    executor: builder
     steps:
-      # Replace this with steps to deploy to users
-      - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
-workflows:
-  example:
-    jobs:
-      - test
-      - build:
-          requires:
-            - test
-      - deploy:
-          requires:
-            - test
+      - checkout
+      - install-deps:
+          include-assets: false
+      - mix-test
