@@ -1,0 +1,51 @@
+<.header>
+  Workplace <%= @workplace.id %>
+  <:subtitle>This is a workplace record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/workplaces/#{@workplace}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit workplace</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @workplace.name %></:item>
+  <:item title="Street name"><%= @workplace.street_name %></:item>
+  <:item title="Street number"><%= @workplace.house_number %></:item>
+  <:item title="Zip"><%= @workplace.zip %></:item>
+  <:item title="City"><%= @workplace.city %></:item>
+</.list>
+
+<div class="mt-12">
+  <h2 class="font-semibold text-zinc-800">Medics</h2>
+  <p class="mt-2 text-sm leading-6 text-zinc-600">Medics working at <%= @workplace.name %></p>
+</div>
+
+<.table
+  id="medics"
+  rows={@workplace.medics}
+  row_click={fn medic -> JS.navigate(~p"/medics/#{medic}") end}
+>
+  <:col :let={medic} label="Name"><%= medic.name %></:col>
+  <:col :let={medic} label="Title"><%= medic.title %></:col>
+  <:col :let={medic} label="Specialty"><%= medic.specialty %></:col>
+  <:col :let={medic} label="Gender"><%= medic.gender %></:col>
+</.table>
+
+<.back navigate={~p"/workplaces"}>Back to workplaces</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="workplace-modal"
+  show
+  on_cancel={JS.patch(~p"/workplaces/#{@workplace}")}
+>
+  <.live_component
+    module={MedHubWeb.WorkplaceLive.FormComponent}
+    id={@workplace.id}
+    title={@page_title}
+    action={@live_action}
+    workplace={@workplace}
+    patch={~p"/workplaces/#{@workplace}"}
+  />
+</.modal>

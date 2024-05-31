@@ -1,0 +1,49 @@
+<.header>
+  Listing Medics
+  <:actions>
+    <.link patch={~p"/medics/new"}>
+      <.button>New Medic</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="medics"
+  rows={@streams.medics}
+  row_click={fn {_id, medic} -> JS.navigate(~p"/medics/#{medic}") end}
+>
+  <:col :let={{_id, medic}} label="Name"><%= medic.name %></:col>
+  <:col :let={{_id, medic}} label="Title"><%= medic.title %></:col>
+  <:col :let={{_id, medic}} label="Workplace"><%= medic.workplace.name %></:col>
+  <:col :let={{_id, medic}} label="Gender"><%= medic.gender %></:col>
+  <:action :let={{_id, medic}}>
+    <div class="sr-only">
+      <.link navigate={~p"/medics/#{medic}"}>Show</.link>
+    </div>
+    <.link patch={~p"/medics/#{medic}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, medic}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: medic.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="medic-modal"
+  show
+  on_cancel={JS.patch(~p"/medics")}
+>
+  <.live_component
+    module={MedHubWeb.MedicLive.FormComponent}
+    id={@medic.id || :new}
+    title={@page_title}
+    action={@live_action}
+    medic={@medic}
+    patch={~p"/medics"}
+  />
+</.modal>
