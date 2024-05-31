@@ -1,0 +1,42 @@
+<.header>
+  Medic <%= @medic.id %>
+  <:subtitle>This is a medic record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/medics/#{@medic}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit medic</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Title"><%= @medic.title %></:item>
+  <:item title="Name"><%= @medic.name %></:item>
+  <:item title="Gender"><%= @medic.gender %></:item>
+  <:item title="Workplace">
+    <.link
+      navigate={~p"/workplaces/#{@medic.workplace}"}
+      class="text-sm leading-6 text-zinc-900 hover:text-zinc-700"
+    >
+      <%= @medic.workplace.name %>
+      <.icon name="hero-arrow-long-right" class="h-3 w-3" />
+    </.link>
+  </:item>
+</.list>
+
+<.back navigate={~p"/medics"}>Back to medics</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="medic-modal"
+  show
+  on_cancel={JS.patch(~p"/medics/#{@medic}")}
+>
+  <.live_component
+    module={MedHubWeb.MedicLive.FormComponent}
+    id={@medic.id}
+    title={@page_title}
+    action={@live_action}
+    medic={@medic}
+    patch={~p"/medics/#{@medic}"}
+  />
+</.modal>

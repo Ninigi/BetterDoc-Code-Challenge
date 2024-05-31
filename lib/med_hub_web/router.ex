@@ -17,7 +17,19 @@ defmodule MedHubWeb.Router do
   scope "/", MedHubWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/medics", MedicLive.Index, :index
+    live "/medics/new", MedicLive.Index, :new
+    live "/medics/:id/edit", MedicLive.Index, :edit
+
+    live "/medics/:id", MedicLive.Show, :show
+    live "/medics/:id/show/edit", MedicLive.Show, :edit
+
+    live "/workplaces", WorkplaceLive.Index, :index
+    live "/workplaces/new", WorkplaceLive.Index, :new
+    live "/workplaces/:id/edit", WorkplaceLive.Index, :edit
+
+    live "/workplaces/:id", WorkplaceLive.Show, :show
+    live "/workplaces/:id/show/edit", WorkplaceLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

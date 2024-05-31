@@ -1,0 +1,51 @@
+<.header>
+  Listing Workplaces
+  <:actions>
+    <.link patch={~p"/workplaces/new"}>
+      <.button>New Workplace</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="workplaces"
+  rows={@streams.workplaces}
+  row_click={fn {_id, workplace} -> JS.navigate(~p"/workplaces/#{workplace}") end}
+>
+  <:col :let={{_id, workplace}} label="Name"><%= workplace.name %></:col>
+  <:col :let={{_id, workplace}} label="Street name"><%= workplace.street_name %></:col>
+  <:col :let={{_id, workplace}} label="Street number"><%= workplace.house_number %></:col>
+  <:col :let={{_id, workplace}} label="Zip"><%= workplace.zip %></:col>
+  <:col :let={{_id, workplace}} label="City"><%= workplace.city %></:col>
+  <:col :let={{_id, workplace}} label="Medics"><%= workplace.medics_count %></:col>
+  <:action :let={{_id, workplace}}>
+    <div class="sr-only">
+      <.link navigate={~p"/workplaces/#{workplace}"}>Show</.link>
+    </div>
+    <.link patch={~p"/workplaces/#{workplace}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, workplace}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: workplace.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="workplace-modal"
+  show
+  on_cancel={JS.patch(~p"/workplaces")}
+>
+  <.live_component
+    module={MedHubWeb.WorkplaceLive.FormComponent}
+    id={@workplace.id || :new}
+    title={@page_title}
+    action={@live_action}
+    workplace={@workplace}
+    patch={~p"/workplaces"}
+  />
+</.modal>

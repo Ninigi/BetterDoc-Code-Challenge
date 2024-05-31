@@ -27,6 +27,8 @@ defmodule MedHub.Practices.Medic do
     |> check_constraint(:medics_count, name: "check_medics_count", message: @medics_count_error)
   end
 
+  def genders, do: @genders
+
   defp unsafe_validate_medics_count(changeset) do
     # NOTE: medics count <= 50 is enforced by database triggers and a constraint!
     # this validation is just for convenience, to avoid unnecessary ERROR logs, and easier to read code
