@@ -4,6 +4,8 @@ defmodule MedHubWeb.WorkplaceLiveTest do
   import Phoenix.LiveViewTest
   import MedHub.PracticesFixtures
 
+  alias MedHub.Repo
+
   @invalid_attrs %{name: nil, zip: nil, street_name: nil, house_number: nil, city: nil}
 
   defp create_workplace(_) do
@@ -87,6 +89,17 @@ defmodule MedHubWeb.WorkplaceLiveTest do
 
       assert html =~ "Show Workplace"
       assert html =~ workplace.name
+    end
+
+    test "displays medics", %{conn: conn, workplace: workplace} do
+      {:ok, _show_live, html} = live(conn, ~p"/workplaces/#{workplace}")
+
+      %{medics: medics} = Repo.preload(workplace, [:medics])
+      assert html =~ "Medics"
+
+      for medic <- medics do
+        assert html =~ medic.name
+      end
     end
 
     test "updates workplace within modal", %{conn: conn, workplace: workplace} do

@@ -4,6 +4,8 @@ defmodule MedHubWeb.MedicLiveTest do
   import Phoenix.LiveViewTest
   import MedHub.PracticesFixtures
 
+  alias MedHub.Repo
+
   @invalid_attrs %{name: nil, title: nil, gender: :other}
 
   defp create_medic(_) do
@@ -85,6 +87,13 @@ defmodule MedHubWeb.MedicLiveTest do
 
       assert html =~ "Show Medic"
       assert html =~ medic.name
+    end
+
+    test "displays workplace", %{conn: conn, medic: medic} do
+      {:ok, _show_live, html} = live(conn, ~p"/medics/#{medic}")
+
+      %{workplace: workplace} = Repo.preload(medic, :workplace)
+      assert html =~ workplace.name
     end
 
     test "updates medic within modal", %{conn: conn, medic: medic} do
