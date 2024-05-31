@@ -104,10 +104,9 @@ defmodule MedHub.PracticesTest do
     test "create_medic/1 with valid data creates a medic" do
       attrs = medic_attrs()
       assert {:ok, %Medic{} = medic} = Practices.create_medic(attrs)
-      assert medic.name == "some name"
-      assert medic.title == "some title"
-      assert medic.gender == attrs.gender
-      assert medic.specialty == "some specialty"
+
+      keys = Map.keys(attrs)
+      assert attrs == Map.take(medic, keys)
     end
 
     test "create_medic/1 with invalid data returns error changeset" do
