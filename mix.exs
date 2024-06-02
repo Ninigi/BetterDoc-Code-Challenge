@@ -9,7 +9,8 @@ defmodule MedHub.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      test_coverage: [ignore_modules: [MedHubWeb.Layouts, MedHub.Repo, MedHub.DataCase, MedHub.Application, MedHubWeb.Telemetry]]
     ]
   end
 
