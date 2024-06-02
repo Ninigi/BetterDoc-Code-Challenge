@@ -32,8 +32,8 @@ defmodule MedHubWeb.MedicLiveTest do
       assert html =~ medic2.name
 
       filter = %{
-        specialty: medic1.specialty,
-        gender: medic1.gender
+        "specialty" => medic1.specialty,
+        "gender" => medic1.gender
       }
 
       assert index_live
