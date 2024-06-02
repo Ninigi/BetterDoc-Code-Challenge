@@ -107,14 +107,35 @@ defmodule MedHub.Practices do
   @doc """
   Returns the list of medics.
 
+  Medics can be filtered by passing a `:filter` option. If filter includes `:specialty`, this function applies an `ilike` search.
+
   ## Examples
 
       iex> list_medics()
       [%Medic{}, ...]
 
+      iex> list_medics(filter: %{})
+
   """
-  def list_medics do
-    Repo.all(Medic)
+  def list_medics(opts \\ []) do
+    {filter, _opts} = Keyword.pop(opts, :filter, [])
+    {specialty, filter} = Keyword.pop(filter, :specialty)
+
+    Medic
+    |> maybe_filter_specialty(specialty)
+    |> where(^filter)
+    |> Repo.all()
+  end
+
+  defp maybe_filter_specialty(queryable, nil), do: queryable
+
+  defp maybe_filter_specialty(queryable, specialty) do
+    specialty_query = "%#{specialty}%"
+
+    from(
+      medics in queryable,
+      where: ilike(medics.specialty, ^specialty_query)
+    )
   end
 
   @doc """

@@ -16,10 +16,12 @@
   <:item title="City"><%= @workplace.city %></:item>
 </.list>
 
-<div class="mt-12">
-  <h2 class="font-semibold text-zinc-800">Medics</h2>
-  <p class="mt-2 text-sm leading-6 text-zinc-600">Medics working at <%= @workplace.name %></p>
-</div>
+<.subheading>
+  Medics
+  <:description>
+    Medics working at <%= @workplace.name %>
+  </:description>
+</.subheading>
 
 <.table
   id="medics"

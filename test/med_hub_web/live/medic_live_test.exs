@@ -23,6 +23,31 @@ defmodule MedHubWeb.MedicLiveTest do
       assert html =~ medic.name
     end
 
+    test "can filter medics", %{conn: conn, medic: medic1} do
+      medic2 = medic_fixture(%{specialty: "other specialty"})
+
+      {:ok, index_live, html} = live(conn, ~p"/medics")
+
+      assert html =~ medic1.name
+      assert html =~ medic2.name
+
+      filter = %{
+        specialty: medic1.specialty,
+        gender: medic1.gender
+      }
+
+      assert index_live
+             |> form("#medic-filter", filter: filter)
+             |> render_submit()
+
+      assert_patch(index_live, ~p"/medics?#{%{filter: filter}}")
+
+      html = render(index_live)
+
+      assert html =~ medic1.name
+      refute html =~ medic2.name
+    end
+
     test "saves new medic", %{conn: conn} do
       attrs = medic_attrs()
       {:ok, index_live, _html} = live(conn, ~p"/medics")

@@ -7,6 +7,43 @@
   </:actions>
 </.header>
 
+<div>
+  <.subheading>
+    Filter
+  </.subheading>
+
+  <.form
+    class="w-full mt-8"
+    for={@filter}
+    id="medic-filter"
+    phx-change="filter"
+    phx-submit="filter"
+  >
+    <div class="flex flex-wrap -mx-3 mb-6">
+      <div class="w-full md:w-1/4 px-3">
+        <select
+          id="filter-gender"
+          name="filter[gender]"
+          class="mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 text-sm"
+        >
+          <%= filter_gender_options(@filter) %>
+        </select>
+      </div>
+
+      <div class="w-full md:w-3/4 px-3">
+        <input
+          placeholder="Specialty"
+          class="mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 text-sm"
+          name="filter[specialty]"
+          value={@filter[:specialty].value}
+          type="text"
+          phx-debounce="700"
+        />
+      </div>
+    </div>
+  </.form>
+</div>
+
 <.table
   id="medics"
   rows={@streams.medics}
@@ -14,6 +51,7 @@
 >
   <:col :let={{_id, medic}} label="Name"><%= medic.name %></:col>
   <:col :let={{_id, medic}} label="Title"><%= medic.title %></:col>
+  <:col :let={{_id, medic}} label="Specialty"><%= medic.specialty %></:col>
   <:col :let={{_id, medic}} label="Workplace"><%= medic.workplace.name %></:col>
   <:col :let={{_id, medic}} label="Gender"><%= medic.gender %></:col>
   <:action :let={{_id, medic}}>

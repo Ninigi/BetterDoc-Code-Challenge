@@ -1,6 +1,8 @@
 defmodule MedHubWeb.MedicLive.FormComponent do
   use MedHubWeb, :live_component
 
+  import MedHubWeb.MedicLive.FormUtils
+
   alias MedHub.Practices
 
   @impl true
@@ -21,7 +23,7 @@ defmodule MedHubWeb.MedicLive.FormComponent do
       >
         <.input field={@form[:title]} type="text" label="Title" />
         <.input field={@form[:name]} type="text" label="Name" />
-        <.input field={@form[:gender]} type="select" label="Gender" options={@gender_options} />
+        <.input field={@form[:gender]} type="select" label="Gender" options={gender_options()} />
         <.input field={@form[:specialty]} type="text" label="Specialty" />
         <.input
           field={@form[:workplace_id]}
@@ -46,8 +48,7 @@ defmodule MedHubWeb.MedicLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign_form(changeset)
-     |> assign_workplace_options()
-     |> assign_gender_options()}
+     |> assign_workplace_options()}
   end
 
   @impl true
@@ -96,21 +97,6 @@ defmodule MedHubWeb.MedicLive.FormComponent do
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
-  end
-
-  defp assign_gender_options(socket) do
-    gender_options =
-      Practices.Medic.genders()
-      |> Map.new(fn gender ->
-        key =
-          gender
-          |> Atom.to_string()
-          |> Phoenix.Naming.humanize()
-
-        {key, gender}
-      end)
-
-    assign(socket, :gender_options, gender_options)
   end
 
   defp assign_workplace_options(socket) do
