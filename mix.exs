@@ -10,7 +10,15 @@ defmodule MedHub.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      test_coverage: [ignore_modules: [MedHubWeb.Layouts, MedHub.Repo, MedHub.DataCase, MedHub.Application, MedHubWeb.Telemetry]]
+      test_coverage: [
+        ignore_modules: [
+          MedHubWeb.Layouts,
+          MedHub.Repo,
+          MedHub.DataCase,
+          MedHub.Application,
+          MedHubWeb.Telemetry
+        ]
+      ]
     ]
   end
 
