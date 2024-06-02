@@ -673,4 +673,21 @@ defmodule MedHubWeb.CoreComponents do
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
   end
+
+  @doc """
+  Displays a sub heading with optional description.
+  """
+  slot :inner_block, required: true
+  slot :description
+
+  def subheading(assigns) do
+    ~H"""
+    <div class="mt-12">
+      <h2 class="font-semibold text-zinc-800"><%= render_slot(@inner_block) %></h2>
+      <p :for={desc <- @description} class="mt-2 text-sm leading-6 text-zinc-600">
+        <%= render_slot(desc) %>
+      </p>
+    </div>
+    """
+  end
 end

@@ -96,6 +96,17 @@ defmodule MedHub.PracticesTest do
       assert Practices.list_medics() == [medic]
     end
 
+    test "list_medics/1 can be filtered by gender and specialty" do
+      medic1 = medic_fixture(%{specialty: "Specialty 1"})
+      medic2 = medic_fixture(%{gender: different_gender(medic1.gender), specialty: "Specialty 2"})
+
+      assert [medic] = Practices.list_medics(filter: [gender: medic1.gender])
+      assert medic.gender == medic1.gender
+
+      assert [medic] = Practices.list_medics(filter: [specialty: medic2.specialty])
+      assert medic.specialty == medic2.specialty
+    end
+
     test "get_medic!/1 returns the medic with given id" do
       medic = medic_fixture()
       assert Practices.get_medic!(medic.id) == medic
