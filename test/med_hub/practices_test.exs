@@ -215,7 +215,7 @@ defmodule MedHub.PracticesTest do
       assert {:ok, _medic} = Practices.create_medic(attrs)
     end
 
-    test "automatically updates workplace.medics_count", %{workplace: workplace} do
+    test "automatically increments workplace.medics_count when creating a medic", %{workplace: workplace} do
       assert workplace.medics_count == 0
       attrs = medic_attrs(%{workplace_id: workplace.id})
 
@@ -224,6 +224,51 @@ defmodule MedHub.PracticesTest do
       workplace = Practices.get_workplace!(workplace.id)
 
       assert workplace.medics_count == 1
+    end
+
+    test "automatically decrements workplace.medics_count when creating a medic", %{workplace: workplace} do
+      attrs = medic_attrs(%{workplace_id: workplace.id})
+
+      assert {:ok, medic} = Practices.create_medic(attrs)
+
+      workplace = Practices.get_workplace!(workplace.id)
+
+      assert workplace.medics_count == 1
+
+      Practices.delete_medic(medic)
+
+      workplace = Practices.get_workplace!(workplace.id)
+
+      assert workplace.medics_count == 0
+    end
+
+    test "automatically updates workplace.medics_count when updating a medic", %{workplace: workplace} do
+      attrs = medic_attrs(%{workplace_id: workplace.id})
+
+      assert {:ok, medic} = Practices.create_medic(attrs)
+
+      workplace = Practices.get_workplace!(workplace.id)
+
+      assert workplace.medics_count == 1
+
+      new_workplace = workplace_fixture()
+
+      Practices.update_medic(medic, %{workplace_id: new_workplace.id})
+
+      workplace = Practices.get_workplace!(workplace.id)
+      new_workplace = Practices.get_workplace!(new_workplace.id)
+
+      assert workplace.medics_count == 0
+      assert new_workplace.medics_count == 1
+    end
+
+    test "prevents updating a medic if workplace.medics_count == 50", %{workplace: workplace} do
+      Enum.each(1..50, fn num -> medic_fixture(%{workplace_id: workplace.id, name: "some name #{num}"}) end)
+
+      medic = medic_fixture()
+
+      assert {:error, error_changeset} = Practices.update_medic(medic, %{workplace_id: workplace.id})
+      assert error_changeset.errors[:medics_count] != nil
     end
   end
 end
