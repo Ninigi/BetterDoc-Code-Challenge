@@ -25,8 +25,6 @@ defmodule MedHubWeb.Router do
     live "/medics/:id", MedicLive.Show, :show
     live "/medics/:id/show/edit", MedicLive.Show, :edit
 
-
-
     live "/workplaces", WorkplaceLive.Index, :index
     live "/workplaces/new", WorkplaceLive.Index, :new
     live "/workplaces/:id/edit", WorkplaceLive.Index, :edit

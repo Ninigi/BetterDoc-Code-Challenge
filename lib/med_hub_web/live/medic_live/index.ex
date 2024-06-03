@@ -96,12 +96,12 @@ defmodule MedHubWeb.MedicLive.Index do
 
     assign(
       socket,
-      filter: to_form(%{
-        "gender" => filter["gender"],
-        "specialty" => filter["specialty"]
-      }),
+      filter:
+        to_form(%{
+          "gender" => filter["gender"],
+          "specialty" => filter["specialty"]
+        }),
       filter_params: filter
     )
   end
-
 end

@@ -41,7 +41,7 @@ defmodule MedHubWeb.NavHelpers do
   def is_current_nav?(current_view, view_namespace) do
     ["MedHubWeb", current_namespace | _] = Module.split(current_view)
     ["MedHubWeb", namespace | _] = Module.split(view_namespace)
-    
+
     namespace == current_namespace
   end
 end

@@ -15,7 +15,9 @@
           class={
             "px-2 hover:text-zinc-700 #{if is_current_nav?(@current_view, MedHubWeb.MedicLive), do: "font-semibold", else: "hover:bg-gray-50"}"
           }
-          aria-current={if is_current_nav?(@current_view, MedHubWeb.MedicLive), do: "true", else: "false"}
+          aria-current={
+            if is_current_nav?(@current_view, MedHubWeb.MedicLive), do: "true", else: "false"
+          }
         >
           Medics
         </.link>
@@ -25,7 +27,9 @@
           class={
             "px-2 hover:text-zinc-700 #{if is_current_nav?(@current_view, MedHubWeb.WorkplaceLive), do: "font-semibold", else: "hover:bg-gray-50"}"
           }
-          aria-current={if is_current_nav?(@current_view, MedHubWeb.WorkplaceLive), do: "true", else: "false"}
+          aria-current={
+            if is_current_nav?(@current_view, MedHubWeb.WorkplaceLive), do: "true", else: "false"
+          }
         >
           Workplaces
         </.link>
