@@ -2,14 +2,13 @@ defmodule MedHubWeb.MedicLive.Index do
   use MedHubWeb, :live_view
 
   alias MedHub.Practices
-  alias MedHub.Practices.Medic
   alias MedHub.Repo
 
-  import MedHubWeb.MedicLive.FormUtils
+  import MedHubWeb.MedicLive.MedicComponents
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok, assign_current_view(socket, __MODULE__)}
   end
 
   @impl true
@@ -32,7 +31,7 @@ defmodule MedHubWeb.MedicLive.Index do
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Medic")
-    |> assign(:medic, %Medic{})
+    |> assign(:medic, %Practices.Medic{})
   end
 
   defp apply_action(socket, :index, _params) do
@@ -41,9 +40,19 @@ defmodule MedHubWeb.MedicLive.Index do
     |> assign(:medic, nil)
   end
 
+  defp apply_action(socket, :new_workplace, _params) do
+    socket
+    |> assign(:page_title, "New Workplace")
+    |> assign(:workplace, %Practices.Workplace{})
+  end
+
   @impl true
   def handle_info({MedHubWeb.MedicLive.FormComponent, {:saved, medic}}, socket) do
     {:noreply, stream_insert(socket, :medics, preloads(medic))}
+  end
+
+  def handle_info({MedHubWeb.WorkplaceLive.FormComponent, {:saved, _workplace}}, socket) do
+    {:noreply, socket}
   end
 
   @impl true
@@ -87,20 +96,12 @@ defmodule MedHubWeb.MedicLive.Index do
 
     assign(
       socket,
-      :filter,
-      to_form(%{
-        "gender" => filter["gender"],
-        "specialty" => filter["specialty"]
-      })
+      filter:
+        to_form(%{
+          "gender" => filter["gender"],
+          "specialty" => filter["specialty"]
+        }),
+      filter_params: filter
     )
-  end
-
-  defp filter_gender_options(filter) do
-    options =
-      gender_options()
-      |> Enum.into([])
-
-    [{"Any Gender", nil} | options]
-    |> Phoenix.HTML.Form.options_for_select(filter[:gender].value)
   end
 end

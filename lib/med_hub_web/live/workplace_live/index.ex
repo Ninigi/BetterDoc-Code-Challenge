@@ -6,7 +6,12 @@ defmodule MedHubWeb.WorkplaceLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :workplaces, Practices.list_workplaces())}
+    socket =
+      socket
+      |> assign_current_view(__MODULE__)
+      |> stream(:workplaces, Practices.list_workplaces())
+
+    {:ok, socket}
   end
 
   @impl true

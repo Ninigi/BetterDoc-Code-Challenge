@@ -71,7 +71,7 @@ defmodule MedHubWeb.WorkplaceLive.FormComponent do
     end
   end
 
-  defp save_workplace(socket, :new, workplace_params) do
+  defp save_workplace(socket, action, workplace_params) when action in [:new, :new_workplace] do
     case Practices.create_workplace(workplace_params) do
       {:ok, workplace} ->
         notify_parent({:saved, workplace})
