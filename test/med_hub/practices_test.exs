@@ -215,7 +215,9 @@ defmodule MedHub.PracticesTest do
       assert {:ok, _medic} = Practices.create_medic(attrs)
     end
 
-    test "automatically increments workplace.medics_count when creating a medic", %{workplace: workplace} do
+    test "automatically increments workplace.medics_count when creating a medic", %{
+      workplace: workplace
+    } do
       assert workplace.medics_count == 0
       attrs = medic_attrs(%{workplace_id: workplace.id})
 
@@ -226,7 +228,9 @@ defmodule MedHub.PracticesTest do
       assert workplace.medics_count == 1
     end
 
-    test "automatically decrements workplace.medics_count when creating a medic", %{workplace: workplace} do
+    test "automatically decrements workplace.medics_count when creating a medic", %{
+      workplace: workplace
+    } do
       attrs = medic_attrs(%{workplace_id: workplace.id})
 
       assert {:ok, medic} = Practices.create_medic(attrs)
@@ -242,7 +246,9 @@ defmodule MedHub.PracticesTest do
       assert workplace.medics_count == 0
     end
 
-    test "automatically updates workplace.medics_count when updating a medic", %{workplace: workplace} do
+    test "automatically updates workplace.medics_count when updating a medic", %{
+      workplace: workplace
+    } do
       attrs = medic_attrs(%{workplace_id: workplace.id})
 
       assert {:ok, medic} = Practices.create_medic(attrs)
@@ -263,11 +269,15 @@ defmodule MedHub.PracticesTest do
     end
 
     test "prevents updating a medic if workplace.medics_count == 50", %{workplace: workplace} do
-      Enum.each(1..50, fn num -> medic_fixture(%{workplace_id: workplace.id, name: "some name #{num}"}) end)
+      Enum.each(1..50, fn num ->
+        medic_fixture(%{workplace_id: workplace.id, name: "some name #{num}"})
+      end)
 
       medic = medic_fixture()
 
-      assert {:error, error_changeset} = Practices.update_medic(medic, %{workplace_id: workplace.id})
+      assert {:error, error_changeset} =
+               Practices.update_medic(medic, %{workplace_id: workplace.id})
+
       assert error_changeset.errors[:medics_count] != nil
     end
   end
