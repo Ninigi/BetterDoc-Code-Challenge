@@ -70,6 +70,8 @@ The only 100% relyable way to enforce the 50 medics/workplace limit is to introd
 To make tracking the current number of medics/workplace easier, we add a `medics_count` field to `workplaces`. We can check this number in the changeset to avoid unnecessary database hits.
 
  ## New Features (WIP or upcoming)
+
+ This is just an example of what could be improved, and how I might keep future improvements/feature ideas organized in the repository.
  
  * [Specialty normalization](/dev_docs/new_features/specialty_normalization.md)
 
