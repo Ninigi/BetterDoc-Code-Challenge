@@ -55,6 +55,7 @@ defmodule MedHubWeb do
         layout: {MedHubWeb.Layouts, :app}
 
       unquote(html_helpers())
+      import MedHubWeb.NavHelpers
     end
   end
 

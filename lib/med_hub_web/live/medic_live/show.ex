@@ -6,9 +6,9 @@ defmodule MedHubWeb.MedicLive.Show do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok, assign_current_view(socket, __MODULE__)}
   end
-
+  
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     medic =

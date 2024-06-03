@@ -8,19 +8,28 @@
         v<%= Application.spec(:phoenix, :vsn) %>
       </p>
     </div>
-    <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
-      <a href="https://twitter.com/elixirphoenix" class="hover:text-zinc-700">
-        @elixirphoenix
-      </a>
-      <a href="https://github.com/phoenixframework/phoenix" class="hover:text-zinc-700">
-        GitHub
-      </a>
-      <a
-        href="https://hexdocs.pm/phoenix/overview.html"
-        class="rounded-lg bg-zinc-100 px-2 py-1 hover:bg-zinc-200/80"
-      >
-        Get Started <span aria-hidden="true">&rarr;</span>
-      </a>
+    <div class="flex items-center gap-4 leading-6 text-zinc-900">
+      <nav>
+        <.link
+          navigate={~p"/medics"}
+          class={
+            "px-2 hover:text-zinc-700 #{if is_current_nav?(@current_view, MedHubWeb.MedicLive), do: "font-semibold", else: "hover:bg-gray-50"}"
+          }
+          aria-current={if is_current_nav?(@current_view, MedHubWeb.MedicLive), do: "true", else: "false"}
+        >
+          Medics
+        </.link>
+
+        <.link
+          navigate={~p"/workplaces"}
+          class={
+            "px-2 hover:text-zinc-700 #{if is_current_nav?(@current_view, MedHubWeb.WorkplaceLive), do: "font-semibold", else: "hover:bg-gray-50"}"
+          }
+          aria-current={if is_current_nav?(@current_view, MedHubWeb.WorkplaceLive), do: "true", else: "false"}
+        >
+          Workplaces
+        </.link>
+      </nav>
     </div>
   </div>
 </header>

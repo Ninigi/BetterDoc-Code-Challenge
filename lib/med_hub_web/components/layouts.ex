@@ -10,5 +10,7 @@ defmodule MedHubWeb.Layouts do
   """
   use MedHubWeb, :html
 
+  import MedHubWeb.NavHelpers, only: [is_current_nav?: 2]
+
   embed_templates "layouts/*"
 end
