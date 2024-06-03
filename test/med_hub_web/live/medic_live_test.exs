@@ -72,6 +72,26 @@ defmodule MedHubWeb.MedicLiveTest do
       assert html =~ attrs.name
     end
 
+    test "saves new workplace", %{conn: conn} do
+      {:ok, index_live, _html} = live(conn, ~p"/medics")
+
+      assert index_live |> element("a", "New Workplace") |> render_click() =~
+               "New Workplace"
+
+      assert_patch(index_live, ~p"/medics/new-workplace")
+
+      attrs = workplace_attrs()
+
+      assert index_live
+             |> form("#workplace-form", workplace: attrs)
+             |> render_submit()
+
+      assert_patch(index_live, ~p"/medics")
+
+      html = render(index_live)
+      assert html =~ "Workplace created successfully"
+    end
+
     test "updates medic in listing", %{conn: conn, medic: medic} do
       attrs = medic_attrs()
       {:ok, index_live, _html} = live(conn, ~p"/medics")
